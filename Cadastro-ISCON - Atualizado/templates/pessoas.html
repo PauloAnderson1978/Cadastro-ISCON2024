@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Pessoas Cadastradas</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>Pessoas Cadastradas - ISCON</h1>
+    <table border="1" id="tabela-pessoas">
+        <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Turma</th>
+        </tr>
+        {% for pessoa in pessoas %}
+        <tr>
+            <td>{{ pessoa[1] }}</td>
+            <td>{{ pessoa[2] }}</td>
+            <td>{{ pessoa[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <!-- Botão para limpar o banco de dados -->
+    <button id="limpar-tabela">Limpar Tabela</button>
+
+    <script>
+        document.getElementById('limpar-tabela').addEventListener('click', function() {
+            // Enviar requisição POST via AJAX para limpar a tabela
+            fetch('/limpar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    // Limpar a tabela na interface
+                    document.getElementById('tabela-pessoas').innerHTML = `
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Turma</th>
+                        </tr>
+                    `;
+                } else {
+                    alert('Erro ao limpar a tabela');
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+            });
+        });
+    </script>
+</body>
+</html>
